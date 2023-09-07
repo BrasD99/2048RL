@@ -3,9 +3,6 @@ import numpy as np
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from io import BytesIO
-from PIL import Image
-import base64
 import json
 
 MAX_SCORE = 3932156
@@ -50,20 +47,6 @@ class GameEnv(gym.Env):
             2: '⇩',
             3: '⇦'
         }
-        
-    def _get_done(self):
-        game_message_element = self._driver \
-            .find_element(By.CLASS_NAME, 'game-message')
-        class_attribute = game_message_element \
-            .get_attribute('class')
-        return 'game-over' in class_attribute
-    
-    def _get_image(self):
-        _img = self._driver \
-            .find_element(By.CLASS_NAME, 'game-container')
-        return np.array(
-            Image.open(BytesIO(base64.b64decode(_img.screenshot_as_base64)))
-        )
     
     def _get_record(self):
         record = self._driver.execute_script('return localStorage.getItem("bestScore");')
