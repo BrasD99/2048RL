@@ -17,7 +17,7 @@ This repository contains the code for training a reinforcement learning (RL) age
    ```
    cd 2048RL
    ```
-4. Install necessary packages:
+4. Install requirements:
    ```
    pip install -r requirements.txt
    ```
