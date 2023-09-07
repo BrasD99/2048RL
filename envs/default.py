@@ -2,7 +2,6 @@ import gymnasium as gym
 import numpy as np
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from io import BytesIO
 from PIL import Image
@@ -45,11 +44,7 @@ class GameEnv(gym.Env):
             Keys.ARROW_LEFT
         ]
 
-        action_chains = ActionChains(self._driver)
-        self.keydown_actions = [action_chains.key_down(item) for item in self.actions_map]
-        self.keyup_actions = [action_chains.key_up(item) for item in self.actions_map]
-
-        self.map_actions = {
+        self.to_arrow = {
             0: '⇧',
             1: '⇨',
             2: '⇩',
@@ -101,16 +96,15 @@ class GameEnv(gym.Env):
         if not terminated:
             score = gameState['score']
             gained_score = score - self.prev_score
-            if gained_score == 0:
-                reward = -1
-            else:
+
+            if gained_score != 0:
                 reward = gained_score
-                
+            
             self.prev_score = score
 
-        action = self.map_actions[action]
+        arrow = self.to_arrow[action]
 
-        self._update_analytics(action, reward)
+        self._update_analytics(arrow, reward)
 
         return obs, reward, terminated, truncated, {'score': score}
     
