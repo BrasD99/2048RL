@@ -8,19 +8,19 @@ This repository contains the code for training a reinforcement learning (RL) age
 - Training script.
 
 ## Installation
-1. Clone this repository to your local machine:
+1. Install Chrome
+2. Clone this repository to your local machine:
    ```
    git clone https://github.com/BrasD99/2048RL.git
    ```
-2. Cd to the project:
+3. Cd to the project:
    ```
    cd 2048RL
    ```
-3. Install necessary packages:
+4. Install necessary packages:
    ```
    pip install -r requirements.txt
    ```
-4. Install Chrome
 5. Train the RL agent:
    ```
    python train.py
