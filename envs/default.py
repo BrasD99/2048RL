@@ -19,9 +19,9 @@ class GameEnv(gym.Env):
         self.uri = uri
         self.action_space = gym.spaces.Discrete(4)
         self.observation_space = gym.spaces.Box(
-            low=1, 
-            high=1, 
-            shape=(18,), 
+            low=0, 
+            high=MAX_CELL_VALUE, 
+            shape=(16,), 
             dtype=np.uint8
         )
 
@@ -55,14 +55,14 @@ class GameEnv(gym.Env):
     def _get_state(self):
         gameState = self._driver.execute_script('return localStorage.getItem("gameState");')
         cells = np.zeros(16)
-        score = 0
+        #score = 0
         if gameState:
             gameState = json.loads(gameState)
-            score = gameState['score']
+            #score = gameState['score']
             cells = np.array([d.get('value', 0) if d else 0 \
                                          for row in gameState['grid']['cells'] for d in row])
-        record = self._get_record()
-        return gameState, np.array([score, record] + cells.tolist())
+        #record = self._get_record()
+        return gameState, cells #np.array([score, record] + cells.tolist())
 
     def step(self, action):
         self._driver.find_element(By.TAG_NAME, 'body') \
@@ -74,14 +74,15 @@ class GameEnv(gym.Env):
         reward = -1
         truncated = False
         score = 0
-        gained_score = 0
 
         if not terminated:
             score = gameState['score']
             gained_score = score - self.prev_score
 
             if gained_score != 0:
-                reward = gained_score
+                reward = score
+            else:
+                reward = -.5
             
             self.prev_score = score
 
@@ -105,7 +106,7 @@ class GameEnv(gym.Env):
         self._driver.execute_script(js_code)
     
     def _update_analytics(self, action, reward):
-        reward = "{:.10f}".format(reward)
+        #reward = "{:.10f}".format(reward)
         js_code = f"""
             var p = document.querySelector('.analytics');
             p.textContent = 'Action: {action} Reward: {reward}';
